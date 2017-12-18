@@ -1,0 +1,12 @@
+<div ng-controller="horizon.dashboard.project.heat_dashboard.stacks.DrawerController">
+
+  <hz-resource-property-list
+    resource-type-name="OS::Heat::Stack"
+    item="item"
+    property-groups="[
+      ['stack_name', 'id'],
+      ['creation_time', 'stack_owner'],
+      ['stack_status']]">
+  </hz-resource-property-list>
+
+</div>

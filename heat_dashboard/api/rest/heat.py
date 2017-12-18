@@ -11,6 +11,8 @@
 # limitations under the License.
 """API for the heat service."""
 
+import yaml
+
 from django.views import generic
 
 from heat_dashboard import api
@@ -18,6 +20,13 @@ from heat_dashboard import api
 from openstack_dashboard import api as dashboard_api
 from openstack_dashboard.api.rest import urls
 from openstack_dashboard.api.rest import utils as rest_utils
+
+
+STACK_CLIENT_KEYWORDS = {'resource_type', 'marker',
+                         'sort_dir', 'sort_key', 'paginate'}
+
+
+RESOURCE_TYPE_CLIENT_KEYWORDS = {'sort_dir', 'sort_key'}
 
 
 @urls.register
@@ -51,3 +60,133 @@ class Services(generic.View):
             return {'items': [u.to_dict() for u in result]}
         else:
             raise rest_utils.AjaxError(501, '')
+
+
+@urls.register
+class Stack(generic.View):
+    """API for retrieving a single stack"""
+    url_regex = r'heat/stacks/(?P<stack_id>[^/]+|default)/$'
+
+    @rest_utils.ajax()
+    def get(self, request, stack_id):
+        """Get a specific stack
+
+        http://localhost/api/heat/stacks/<stack-id>
+        """
+        stack = api.heat.stack_get(request, stack_id)
+        return stack.to_dict()
+
+    @rest_utils.ajax()
+    def delete(self, request, stack_id):
+        """Delete a specific stack
+
+        DELETE http://localhost/api/heat/stacks/<stack_id>
+        """
+        api.heat.stack_delete(request, stack_id)
+
+
+@urls.register
+class Stacks(generic.View):
+    """API for Heat Stacks."""
+    url_regex = r'heat/stacks/$'
+
+    @rest_utils.ajax()
+    def get(self, request):
+        """Get a list of stacks.
+
+        The listing result is an object with property "items". Each item is
+        a stack.
+
+        Example GET:
+        http://localhost/api/heat/stacks?sort_dir=desc&sort_key=name&name=s01
+
+        The following get parameters may be passed in the GET
+        request:
+
+        :param paginate: If true will perform pagination based on settings.
+        :param marker: Specifies the namespace of the last-seen stack.
+             The typical pattern of limit and marker is to make an
+             initial limited request and then to use the last
+             namespace from the response as the marker parameter
+             in a subsequent limited request. With paginate, limit
+             is automatically set.
+        :param sort_dir: The sort direction ('asc' or 'desc').
+        :param sort_key: The field to sort on (for example, 'created_at').
+             Default is created_at.
+        """
+
+        filters, kwargs = rest_utils.parse_filters_kwargs(
+            request, STACK_CLIENT_KEYWORDS)
+
+        stacks, has_more_data, has_prev_data = api.heat.stacks_list(
+            request, filters=filters, **kwargs)
+
+        return {
+            'items': [i.to_dict() for i in stacks],
+            'has_more_data': has_more_data,
+            'has_prev_data': has_prev_data,
+        }
+
+
+@urls.register
+class ResourceType(generic.View):
+    """API for retrieving a single resource type"""
+    url_regex = r'heat/resource_types/(?P<resource_type_id>[^/]+|default)/$'
+
+    @rest_utils.ajax()
+    def get(self, request, resource_type_id):
+        """Get a specific resource type
+
+        http://localhost/api/heat/resource_types/<resource-type-id>
+        """
+        resource_type = api.heat.resource_type_get(request, resource_type_id)
+        yaml_attributes = yaml.safe_dump(
+                resource_type['attributes'], indent=2)
+        yaml_properties = yaml.safe_dump(
+                resource_type['properties'], indent=2)
+        return {
+            'resource_type': resource_type['resource_type'],
+            'attributes': yaml_attributes,
+            'properties': yaml_properties
+        }
+
+
+@urls.register
+class ResourceTypes(generic.View):
+    """API for Heat Resource Type."""
+    url_regex = r'heat/resource_types/$'
+
+    @rest_utils.ajax()
+    def get(self, request):
+        """Get a list of resource types.
+
+        The listing result is an object with property "items". Each item is
+        a resource type.
+
+        Example GET:
+        http://localhost/api/heat/resource_types?sort_dir=desc&sort_key=name&
+            name=OS::Heat:Stack
+
+        The following get parameters may be passed in the GET
+        request:
+
+        :param paginate: If true will perform pagination based on settings.
+        :param marker: Specifies the namespace of the last-seen resource type.
+             The typical pattern of limit and marker is to make an
+             initial limited request and then to use the last
+             namespace from the response as the marker parameter
+             in a subsequent limited request. With paginate, limit
+             is automatically set.
+        :param sort_dir: The sort direction ('asc' or 'desc').
+        :param sort_key: The field to sort on (for example, 'created_at').
+             Default is created_at.
+        """
+
+        filters, kwargs = rest_utils.parse_filters_kwargs(
+            request, RESOURCE_TYPE_CLIENT_KEYWORDS)
+        resource_types = api.heat.resource_types_list(
+                request, filters=filters)
+
+        return {
+            'items': [{'resource_type': i.to_dict()} for i in resource_types]
+        }

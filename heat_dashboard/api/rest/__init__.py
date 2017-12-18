@@ -22,8 +22,10 @@ in https://wiki.openstack.org/wiki/APIChangeGuidelines.
 """
 
 from heat_dashboard.api.rest import heat
+from heat_dashboard.api.rest import urls
 
 
 __all__ = [
     'heat',
+    'urls',
 ]

@@ -10,6 +10,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 from heat_dashboard import exceptions
@@ -28,3 +29,8 @@ ADD_EXCEPTIONS = {
     'recoverable': exceptions.RECOVERABLE,
     'unauthorized': exceptions.UNAUTHORIZED
 }
+
+settings.ANGULAR_FEATURES.update({
+    'stacks_panel': True,
+    'resource_types_panel': True,
+})

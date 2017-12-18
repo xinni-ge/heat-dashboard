@@ -1,0 +1,69 @@
+<div ng-controller="StackOverviewController as ctrl">
+  <div class="row">
+    <div class="col-md-6 detail">
+      <h4 translate>Overview</h4>
+      <hr>
+      <hz-resource-property-list
+        resource-type-name="OS::Heat::Stack"
+        cls="dl-horizontal"
+        item="ctrl.stack"
+        property-groups="[
+          ['stack_name', 'id', 'description']]">
+      </hz-resource-property-list>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 detail">
+      <h4 translate>Status</h4>
+      <hr>
+      <dl class="dl-horizontal">
+        <dt translate>Creation Time</dt>
+        <dd>{$ ctrl.stack.creation_time | date:"dd/MM/yyyy HH:mm" $}</dd>
+        <dt translate>Updated Time</dt>
+        <dd>{$ ctrl.stack.updated_time | date:"dd/MM/yyyy HH:mm" $}</dd>
+        <dt translate>Status</dt>
+        <dd>{$ ctrl.stack.stack_status $}: {$ ctrl.stack.stack_status_reason $}</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 detail">
+      <h4 translate>Outputs</h4>
+      <hr>
+      <dl class="dl-horizontal">
+        <div ng-repeat="op in ctrl.stack.outputs">
+          <dt>{$ op.output_key $}</dt>
+          <dd>{$ op.description $}</dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 detail">
+      <h4 translate>Parameters</h4>
+      <hr>
+      <dl class="dl-horizontal">
+        <div ng-repeat="(key, value) in ctrl.stack.parameters">
+          <dt>{$ key $}</dt>
+          <dd>{$ value $}</dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 detail">
+      <h4 translate>Launch Parameters</h4>
+      <hr>
+      <dl class="dl-horizontal">
+        <dt translate>Timeout (Min)</dt>
+        <dd>{$ ctrl.stack.timeout_mins $}</dd>
+        <dt translate>Disable Rollback</dt>
+        <dd>{$ ctrl.stack.disable_rollback ? 'Disabled': 'Enabled' $}</dd>
+      </dl>
+    </div>
+  </div>
+</div>
