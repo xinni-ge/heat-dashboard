@@ -29,6 +29,8 @@ STACK_CLIENT_KEYWORDS = {'resource_type', 'marker',
 RESOURCE_TYPE_CLIENT_KEYWORDS = {'sort_dir', 'sort_key'}
 
 
+
+
 @urls.register
 class Validate(generic.View):
     """API for validating a template"""
@@ -65,7 +67,7 @@ class Services(generic.View):
 @urls.register
 class Stack(generic.View):
     """API for retrieving a single stack"""
-    url_regex = r'heat/stacks/(?P<stack_id>[^/]+|default)/$'
+    url_regex = r'heat/stacks/(?P<stack_id>[^/]+)/$'
 
     @rest_utils.ajax()
     def get(self, request, stack_id):
@@ -131,7 +133,7 @@ class Stacks(generic.View):
 @urls.register
 class ResourceType(generic.View):
     """API for retrieving a single resource type"""
-    url_regex = r'heat/resource_types/(?P<resource_type_id>[^/]+|default)/$'
+    url_regex = r'heat/resource_types/(?P<resource_type_id>[^/]+)/$'
 
     @rest_utils.ajax()
     def get(self, request, resource_type_id):
@@ -189,4 +191,60 @@ class ResourceTypes(generic.View):
 
         return {
             'items': [{'resource_type': i.to_dict()} for i in resource_types]
+        }
+
+
+@urls.register
+class TemplateFunctions(generic.View):
+    """API for retrieving a list of template functions"""
+    url_regex = r'heat/template_versions/(?P<template_version_id>[^/]+)' \
+                r'/functions$'
+
+    @rest_utils.ajax()
+    def get(self, request, template_version_id):
+        """Get a list of template functions
+
+        http://localhost/api/heat/template_versions/
+                <template-version-id>/functions
+        """
+        template_functions = api.heat.template_function_list(
+            request, template_version_id)
+        return {
+            'items': [i.to_dict() for i in template_functions]
+        }
+
+
+@urls.register
+class TemplateVersions(generic.View):
+    """API for Heat Template Versions."""
+    url_regex = r'heat/template_versions/$'
+
+    @rest_utils.ajax()
+    def get(self, request):
+        """Get a list of template versions.
+
+        The listing result is an object with property "items". Each item is
+        a template version.
+
+        Example GET:
+        http://localhost/api/heat/template_versions
+        The following get parameters may be passed in the GET
+        request:
+
+        :param paginate: If true will perform pagination based on settings.
+        :param marker: Specifies the namespace of the last-seen template
+                       version.
+             The typical pattern of limit and marker is to make an
+             initial limited request and then to use the last
+             namespace from the response as the marker parameter
+             in a subsequent limited request. With paginate, limit
+             is automatically set.
+        :param sort_dir: The sort direction ('asc' or 'desc').
+        :param sort_key: The field to sort on (for example, 'created_at').
+             Default is created_at.
+        """
+
+        template_versions = api.heat.template_version_list(request)
+        return {
+            'items': [i.to_dict() for i in template_versions]
         }

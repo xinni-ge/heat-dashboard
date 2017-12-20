@@ -19,40 +19,35 @@
 
   /**
    * @ngdoc overview
-   * @ngname horizon.app.core.images.details
+   * @ngname horizon.dashboard.project.heat_dashboard.templateVersions.details
    *
    * @description
-   * Provides details features for images.
+   * Provides details features for template version.
    */
-  angular.module('horizon.dashboard.project.heat_dashboard.stacks.details', [
+  angular.module('horizon.dashboard.project.heat_dashboard.templateVersions.details', [
   'horizon.framework.conf', 'horizon.app.core'])
-   .run(registerStackDetails);
+   .run(registerTemplateVersionDetails);
 
-  registerStackDetails.$inject = [
-    'horizon.dashboard.project.heat_dashboard.stacks.basePath',
-    'horizon.dashboard.project.heat_dashboard.stacks.resourceType',
-    'horizon.dashboard.project.heat_dashboard.stacks.service',
+  registerTemplateVersionDetails.$inject = [
+    'horizon.dashboard.project.heat_dashboard.templateVersions.basePath',
+    'horizon.dashboard.project.heat_dashboard.templateVersions.resourceType',
+    'horizon.dashboard.project.heat_dashboard.templateVersions.service',
     'horizon.framework.conf.resource-type-registry.service'
   ];
 
-  function registerStackDetails(
+  function registerTemplateVersionDetails(
     basePath,
-    stackResourceType,
-    stackService,
+    templateVersionResourceType,
+    templateVersionService,
     registry
   ) {
-    registry.getResourceType(stackResourceType)
-      .setLoadFunction(stackService.getStackPromise)
-//      .detailsViews.append({
-//        id: 'stackDetailsTopology',
-//        name: gettext('Topology'),
-//        template: basePath + 'details/topology.html'
-//      })
-      .append({
-        id: 'stackDetailsOverview',
-        name: gettext('Overview'),
+    registry.getResourceType(templateVersionResourceType)
+      .setLoadFunction(templateVersionService.getTemplateVersionPromise)
+      .detailsViews.append({
+        id: 'templateFunctions',
+        name: gettext('Template Functions'),
         template: basePath + 'details/overview.html'
-      })
+      });
   }
 
 })();

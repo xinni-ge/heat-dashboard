@@ -1,7 +1,6 @@
 <div ng-controller="StackOverviewController as ctrl">
   <div class="row">
     <div class="col-md-6 detail">
-      <h4 translate>Overview</h4>
       <hr>
       <hz-resource-property-list
         resource-type-name="OS::Heat::Stack"
@@ -18,9 +17,9 @@
       <h4 translate>Status</h4>
       <hr>
       <dl class="dl-horizontal">
-        <dt translate>Creation Time</dt>
+        <dt translate>Created</dt>
         <dd>{$ ctrl.stack.creation_time | date:"dd/MM/yyyy HH:mm" $}</dd>
-        <dt translate>Updated Time</dt>
+        <dt translate>Last Updated</dt>
         <dd>{$ ctrl.stack.updated_time | date:"dd/MM/yyyy HH:mm" $}</dd>
         <dt translate>Status</dt>
         <dd>{$ ctrl.stack.stack_status $}: {$ ctrl.stack.stack_status_reason $}</dd>
@@ -43,7 +42,7 @@
 
   <div class="row">
     <div class="col-md-6 detail">
-      <h4 translate>Parameters</h4>
+      <h4 translate>Stack Parameters</h4>
       <hr>
       <dl class="dl-horizontal">
         <div ng-repeat="(key, value) in ctrl.stack.parameters">
@@ -59,10 +58,10 @@
       <h4 translate>Launch Parameters</h4>
       <hr>
       <dl class="dl-horizontal">
-        <dt translate>Timeout (Min)</dt>
+        <dt translate>Timeout</dt>
         <dd>{$ ctrl.stack.timeout_mins $}</dd>
-        <dt translate>Disable Rollback</dt>
-        <dd>{$ ctrl.stack.disable_rollback ? 'Disabled': 'Enabled' $}</dd>
+        <dt translate>Rollback</dt>
+        <dd>{$ ctrl.stack.disable_rollback ? 'Disabled': 'Enabled' $}{$ "Minutes" | translate $}</dd>
       </dl>
     </div>
   </div>

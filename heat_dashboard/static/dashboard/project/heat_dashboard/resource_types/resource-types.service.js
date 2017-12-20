@@ -17,7 +17,8 @@
   "use strict";
 
   angular.module('horizon.dashboard.project.heat_dashboard.resourceTypes')
-    .factory('horizon.dashboard.project.heat_dashboard.resourceTypes.service', resourceTypeService);
+    .factory('horizon.dashboard.project.heat_dashboard.resourceTypes.service',
+             resourceTypeService);
 
   resourceTypeService.$inject = [
     '$filter',
@@ -30,10 +31,10 @@
 
   /*
    * @ngdoc factory
-   * @name horizon.app.core.images.service
+   * @name horizon.dashboard.project.heat_dashboard.resourceTypes.service
    *
    * @description
-   * This service provides functions that are used through the Images
+   * This service provides functions that are used through the ResourceType
    * features.  These are primarily used in the module registrations
    * but do not need to be restricted to such use.  Each exposed function
    * is documented below.
@@ -55,9 +56,9 @@
     /*
      * @ngdoc function
      * @name getDetailsPath
-     * @param item {Object} - The image object
+     * @param item {Object} - The resource type object
      * @description
-     * Given an Image object, returns the relative path to the details
+     * Given an ResourceType object, returns the relative path to the details
      * view.
      */
     function getDetailsPath(item) {
@@ -67,12 +68,13 @@
 
     /*
      * @ngdoc function
-     * @name getImagesPromise
+     * @name getResourceTypesPromise
      * @description
      * Given filter/query parameters, returns a promise for the matching
-     * images.  This is used in displaying lists of Images.  In this case,
-     * we need to modify the API's response by adding a composite value called
-     * 'trackBy' to assist the display mechanism when updating rows.
+     * resource types.  This is used in displaying lists of Resource Types.
+     * In this case, we need to modify the API's response by adding
+     * a composite value called 'trackBy' to assist the display
+     * mechanism when updating rows.
      */
     function getResourceTypesPromise(params) {
       return userSession.get().then(getResourceTypes);
@@ -92,9 +94,9 @@
 
     /*
      * @ngdoc function
-     * @name getImagePromise
+     * @name getResourceTypePromise
      * @description
-     * Given an id, returns a promise for the image data.
+     * Given an id, returns a promise for the resource type data.
      */
     function getResourceTypePromise(identifier) {
       return heat.getResourceType(identifier).then(modifyResponse);

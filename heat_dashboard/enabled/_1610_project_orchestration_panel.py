@@ -33,4 +33,5 @@ ADD_EXCEPTIONS = {
 settings.ANGULAR_FEATURES.update({
     'stacks_panel': True,
     'resource_types_panel': True,
+    'template_versions_panel': True,
 })

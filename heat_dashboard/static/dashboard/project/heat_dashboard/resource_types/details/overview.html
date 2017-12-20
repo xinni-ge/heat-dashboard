@@ -1,14 +1,21 @@
 <div ng-controller="ResourceTypeOverviewController as ctrl">
   <div class="row">
     <div class="col-md-6 detail">
-      <h3>{$ ctrl.resource_type $}</h3>
-      <!--<hr>-->
+      <h1>{$ ctrl.resource_type $}</h1>
+      <hr>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6 detail">
+      <dl>
+        <dd>{$ ctrl.resource_type $}</dd>
+      </dl>
     </div>
   </div>
 
   <div class="row">
     <div class="col-md-6 detail">
-      <h3 translate>Attributes</h3>
+      <h4 translate>Attributes</h4>
       <pre>{$ ctrl.attributes $} </pre>
       <!--<hr>-->
     </div>
@@ -16,7 +23,7 @@
 
   <div class="row">
     <div class="col-md-6 detail">
-      <h3 translate>Properties</h3>
+      <h4 translate>Properties</h4>
       <pre>{$ ctrl.properties $} </pre>
       <!--<hr>-->
     </div>

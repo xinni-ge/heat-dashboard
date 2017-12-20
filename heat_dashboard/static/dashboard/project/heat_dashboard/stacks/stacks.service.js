@@ -30,10 +30,10 @@
 
   /*
    * @ngdoc factory
-   * @name horizon.app.core.images.service
+   * @name horizon.dashboard.project.heat_dashboard.stacks.service
    *
    * @description
-   * This service provides functions that are used through the Images
+   * This service provides functions that are used through the Stacks
    * features.  These are primarily used in the module registrations
    * but do not need to be restricted to such use.  Each exposed function
    * is documented below.
@@ -55,9 +55,9 @@
     /*
      * @ngdoc function
      * @name getDetailsPath
-     * @param item {Object} - The image object
+     * @param item {Object} - The stack object
      * @description
-     * Given an Image object, returns the relative path to the details
+     * Given an Stack object, returns the relative path to the details
      * view.
      */
     function getDetailsPath(item) {
@@ -67,19 +67,17 @@
 
     /*
      * @ngdoc function
-     * @name getImagesPromise
+     * @name getStacksPromise
      * @description
      * Given filter/query parameters, returns a promise for the matching
-     * images.  This is used in displaying lists of Images.  In this case,
+     * stacks.  This is used in displaying lists of Stacks.  In this case,
      * we need to modify the API's response by adding a composite value called
      * 'trackBy' to assist the display mechanism when updating rows.
      */
     function getStacksPromise(params) {
-      var projectId;
       return userSession.get().then(getStacks);
 
       function getStacks(userSession) {
-        projectId = userSession.project_id;
         return heat.getStacks(params).then(modifyResponse);
       }
 
@@ -87,6 +85,7 @@
         return {data: {items: response.data.items.map(modifyStack)}};
 
         function modifyStack(stack) {
+          stack.trackBy = stack.id + stack.updated_time;
           return stack;
         }
       }
@@ -94,9 +93,9 @@
 
     /*
      * @ngdoc function
-     * @name getImagePromise
+     * @name getStackPromise
      * @description
-     * Given an id, returns a promise for the image data.
+     * Given an id, returns a promise for the stack data.
      */
     function getStackPromise(identifier) {
       return heat.getStack(identifier).then(modifyResponse);

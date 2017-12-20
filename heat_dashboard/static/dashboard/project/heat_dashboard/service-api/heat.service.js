@@ -39,6 +39,8 @@
       getStack: getStack,
       getResourceTypes: getResourceTypes,
       getResourceType: getResourceType,
+      getTemplateVersions: getTemplateVersions,
+      getTemplateFunctions: getTemplateFunctions,
     };
 
     return service;
@@ -139,18 +141,6 @@
      * @param {Object} params
      * Query parameters. Optional.
      *
-     * @param {boolean} params.paginate
-     * True to paginate automatically.
-     *
-     * @param {string} params.marker
-     * Specifies the resource type of the last-seen resource type.
-     *
-     * The typical pattern of limit and marker is to make an
-     * initial limited request and then to use the last
-     * resource type from the response as the marker parameter
-     * in a subsequent limited request. With paginate, limit
-     * is automatically set.
-     *
      * @param {string} params.sort_dir
      * The sort direction ('asc' or 'desc').
      *
@@ -158,9 +148,6 @@
      *   The field to sort on (for example, 'created_at').
      *   Default is created_at.
      *
-     * @param {string} params.other
-     * Any additional request parameters will be passed through the API as
-     * filters. For example "name" : "fedora" would filter on the fedora name.
      * @returns {Object} The result of the API call
      */
     function getResourceTypes(params) {
@@ -168,6 +155,45 @@
       return apiService.get('/api/heat/resource_types/', config)
         .error(function () {
           toastService.add('error', gettext('Unable to retrieve the resource types.'));
+        });
+    }
+
+    // Template Versions
+    /**
+     * @name getTemplateVersions
+     * @description
+     * Get a list of template versions.
+     *
+     * The listing result is an object with property "items". Each item is
+     * a template version.
+     *
+     * @returns {Object} The result of the API call
+     */
+    function getTemplateVersions(params) {
+      return apiService.get('/api/heat/template_versions/')
+        .error(function () {
+          toastService.add('error', gettext('Unable to retrieve the template versions.'));
+        });
+    }
+
+
+     /**
+     * @name getTemplateVersions
+     * @description
+     * Get a list of template functions.
+     *
+     * The listing result is an object with property "items". Each item is
+     * a template function.
+     *
+     * @param {string} template_version
+     *  Specifies the template version of the functions to request.
+     *
+     * @returns {Object} The result of the API call
+     */
+    function getTemplateFunctions(template_version) {
+      return apiService.get('/api/heat/template_versions/' + template_version + '/functions')
+        .error(function () {
+          toastService.add('error', gettext('Unable to retrieve the template functions.'));
         });
     }
   }

@@ -11,13 +11,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from django.conf import settings
+from django.conf.urls import include
 from django.conf.urls import url
+from django.utils.translation import ugettext_lazy as _
 
+from horizon.browsers.views import AngularIndexView
+
+from heat_dashboard.api import rest
 from heat_dashboard.content.template_versions import views
 
 
-urlpatterns = [
-    url(r'^$', views.TemplateVersionsView.as_view(), name='index'),
-    url(r'^(?P<template_version>[^/]+)/$',
-        views.DetailView.as_view(), name='details'),
-]
+if settings.ANGULAR_FEATURES['stacks_panel']:
+    title = _("Template Versions")
+    # New angular stacks
+    urlpatterns = [
+        url(r'^$', AngularIndexView.as_view(title=title), name='index'),
+        url(r'^api/', include(rest.urls)),
+    ]
+else:
+    urlpatterns = [
+        url(r'^$', views.TemplateVersionsView.as_view(), name='index'),
+        url(r'^(?P<template_version>[^/]+)/$',
+            views.DetailView.as_view(), name='details'),
+    ]
